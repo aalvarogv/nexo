@@ -109,6 +109,25 @@ class TasksPublic(SQLModel):
     count: int
 
 
+# Current weather conditions
+class WeatherCurrent(SQLModel):
+    temperature_c: float
+    weather_code: int
+
+
+# A day's forecast
+class WeatherDaily(SQLModel):
+    date: date
+    temperature_min_c: float
+    temperature_max_c: float
+    weather_code: int
+
+
+class WeatherPublic(SQLModel):
+    current: WeatherCurrent
+    today: WeatherDaily
+
+
 # Generic message
 class Message(SQLModel):
     message: str

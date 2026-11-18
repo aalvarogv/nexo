@@ -1,5 +1,5 @@
 import uuid
-from datetime import UTC, datetime
+from datetime import UTC, date, datetime
 
 from pydantic import EmailStr
 from sqlmodel import Field, Relationship, SQLModel
@@ -52,7 +52,7 @@ class User(UserBase, table=True):
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
     hashed_password: str
     created_at: datetime | None = Field(default_factory=get_datetime_utc)
-    items: list[Item] = Relationship(back_populates="owner", cascade_delete=True)
+    tasks: list[Task] = Relationship(back_populates="owner", cascade_delete=True)
 
 
 # Properties to return via API, id is always required
@@ -67,41 +67,45 @@ class UsersPublic(SQLModel):
 
 
 # Shared properties
-class ItemBase(SQLModel):
+class TaskBase(SQLModel):
     title: str = Field(min_length=1, max_length=255)
     description: str | None = Field(default=None, max_length=255)
+    due_date: date | None = Field(default=None)
+    is_completed: bool = False
 
 
-# Properties to receive on item creation
-class ItemCreate(ItemBase):
+# Properties to receive on task creation
+class TaskCreate(TaskBase):
     pass
 
 
-# Properties to receive on item update
-class ItemUpdate(SQLModel):
+# Properties to receive on task update
+class TaskUpdate(SQLModel):
     title: str | None = Field(default=None, min_length=1, max_length=255)
     description: str | None = Field(default=None, max_length=255)
+    due_date: date | None = Field(default=None)
+    is_completed: bool | None = None
 
 
 # Database model, database table inferred from class name
-class Item(ItemBase, table=True):
+class Task(TaskBase, table=True):
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
     created_at: datetime | None = Field(default_factory=get_datetime_utc)
     owner_id: uuid.UUID = Field(
         foreign_key="user.id", nullable=False, ondelete="CASCADE"
     )
-    owner: User | None = Relationship(back_populates="items")
+    owner: User | None = Relationship(back_populates="tasks")
 
 
 # Properties to return via API, id is always required
-class ItemPublic(ItemBase):
+class TaskPublic(TaskBase):
     id: uuid.UUID
     owner_id: uuid.UUID
     created_at: datetime | None = None
 
 
-class ItemsPublic(SQLModel):
-    data: list[ItemPublic]
+class TasksPublic(SQLModel):
+    data: list[TaskPublic]
     count: int
 
 

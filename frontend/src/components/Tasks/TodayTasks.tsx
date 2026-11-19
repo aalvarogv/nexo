@@ -7,7 +7,7 @@ import { Link } from "@tanstack/react-router"
 import { Suspense } from "react"
 
 import { type TaskPublic, TasksService } from "@/client"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { MetricCard, MetricCardSkeleton } from "@/components/Common/MetricCard"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Skeleton } from "@/components/ui/skeleton"
 import useCustomToast from "@/hooks/useCustomToast"
@@ -63,48 +63,62 @@ function TodayTasksContent() {
   const dueTasks = tasks.data.filter((task) =>
     isDueTodayOrOverdue(task, todayIso),
   )
-
-  if (dueTasks.length === 0) {
-    return (
-      <p className="text-muted-foreground text-sm">Nothing due today. 🎉</p>
-    )
-  }
+  const overdueTasks = dueTasks.filter((task) => task.due_date! < todayIso)
+  const completedCount = tasks.data.filter((task) => task.is_completed).length
 
   return (
-    <div className={cn("flex flex-col gap-3")}>
-      {dueTasks.map((task) => (
-        <TaskRow key={task.id} task={task} />
-      ))}
+    <div className="flex flex-col gap-4">
+      <MetricCard
+        domain="tasks"
+        label="Tasks today"
+        value={`${completedCount} / ${tasks.data.length}`}
+        context={
+          overdueTasks.length > 0
+            ? `${overdueTasks.length} overdue`
+            : "Nothing overdue"
+        }
+      />
+      {dueTasks.length === 0 ? (
+        <p className="text-muted-foreground text-sm">Nothing due today. 🎉</p>
+      ) : (
+        <div className={cn("flex flex-col gap-3")}>
+          {dueTasks.map((task) => (
+            <TaskRow key={task.id} task={task} />
+          ))}
+        </div>
+      )}
     </div>
   )
 }
 
 function TodayTasksFallback() {
   return (
-    <div className="flex flex-col gap-3">
-      {Array.from({ length: 3 }).map((_, index) => (
-        <div key={index} className="flex items-center gap-3">
-          <Skeleton className="size-4" />
-          <Skeleton className="h-4 flex-1" />
-        </div>
-      ))}
+    <div className="flex flex-col gap-4">
+      <MetricCardSkeleton withIcon={false} />
+      <div className="flex flex-col gap-3">
+        {Array.from({ length: 3 }).map((_, index) => (
+          <div key={index} className="flex items-center gap-3">
+            <Skeleton className="size-4" />
+            <Skeleton className="h-4 flex-1" />
+          </div>
+        ))}
+      </div>
     </div>
   )
 }
 
 export function TodayTasks() {
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>
-          <Link to="/tasks">Tasks due today</Link>
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        <Suspense fallback={<TodayTasksFallback />}>
-          <TodayTasksContent />
-        </Suspense>
-      </CardContent>
-    </Card>
+    <div className="flex flex-col gap-2">
+      <Link
+        to="/tasks"
+        className="text-sm font-medium text-muted-foreground hover:text-foreground"
+      >
+        Tasks due today
+      </Link>
+      <Suspense fallback={<TodayTasksFallback />}>
+        <TodayTasksContent />
+      </Suspense>
+    </div>
   )
 }

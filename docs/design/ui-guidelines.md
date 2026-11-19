@@ -31,6 +31,8 @@ Each life area has one accent colour, used consistently for its cards, icons and
 
 Accents are muted and warm on dark backgrounds; avoid saturated neon colours. Status colours (success, warning, danger) are separate from domain accents.
 
+**Intensity by theme:** in dark theme, a `MetricCard` carries its domain colour as the card's own background — a muted solid fill with light text on top, no neutral card around it. In light theme the card stays neutral/white, and the domain colour shows as a left accent bar plus a tinted icon and value — restrained, not filled. The card itself is the colour block; don't nest it inside another neutral card.
+
 ### Shape and spacing
 - Cards with large rounded corners (`rounded-2xl`), soft borders or subtle elevation, no heavy shadows.
 - Consistent spacing scale (Tailwind defaults). Cards breathe: ample internal padding.
@@ -44,7 +46,7 @@ Accents are muted and warm on dark backgrounds; avoid saturated neon colours. St
 ## 3. Core components
 
 ### MetricCard
-Label, value and a context line. Optional: progress towards a target, trend arrow, domain accent.
+Label, value and a context line. Optional: progress towards a target, trend arrow, domain accent. See "Intensity by theme" above for how the domain accent behaves per theme.
 > Example: `TASKS TODAY` · **5 / 8** · "Yesterday 6 · 2 overdue"
 
 ### ContextCard

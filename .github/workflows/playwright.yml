@@ -69,6 +69,8 @@ jobs:
       uses: astral-sh/setup-uv@07a047e608db84b3d8c06cd9a7c7dcc9c355c18e # v10.3.2
       with:
         version: "latest-known"
+    - name: Create .env for CI
+      run: cp .env.example .env
     - run: uv sync
       working-directory: backend
     - run: bun ci

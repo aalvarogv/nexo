@@ -5,7 +5,7 @@ import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 
-import { type ItemCreate, ItemsService } from "@/client"
+import { type TaskCreate, TasksService } from "@/client"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -33,11 +33,12 @@ import { handleError } from "@/utils"
 const formSchema = z.object({
   title: z.string().min(1, { message: "Title is required" }),
   description: z.string().optional(),
+  due_date: z.string().optional(),
 })
 
 type FormData = z.infer<typeof formSchema>
 
-const AddItem = () => {
+const AddTask = () => {
   const [isOpen, setIsOpen] = useState(false)
   const queryClient = useQueryClient()
   const { showSuccessToast, showErrorToast } = useCustomToast()
@@ -49,24 +50,28 @@ const AddItem = () => {
     defaultValues: {
       title: "",
       description: "",
+      due_date: "",
     },
   })
 
   const mutation = useMutation({
-    mutationFn: (data: ItemCreate) => ItemsService.createItem({ body: data }),
+    mutationFn: (data: TaskCreate) => TasksService.createTask({ body: data }),
     onSuccess: () => {
-      showSuccessToast("Item created successfully")
+      showSuccessToast("Task created successfully")
       form.reset()
       setIsOpen(false)
     },
     onError: handleError.bind(showErrorToast),
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["items"] })
+      queryClient.invalidateQueries({ queryKey: ["tasks"] })
     },
   })
 
   const onSubmit = (data: FormData) => {
-    mutation.mutate(data)
+    mutation.mutate({
+      ...data,
+      due_date: data.due_date || undefined,
+    })
   }
 
   return (
@@ -74,14 +79,14 @@ const AddItem = () => {
       <DialogTrigger asChild>
         <Button className="my-4">
           <Plus className="mr-2" />
-          Add Item
+          Add Task
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Add Item</DialogTitle>
+          <DialogTitle>Add Task</DialogTitle>
           <DialogDescription>
-            Fill in the details to add a new item.
+            Fill in the details to add a new task.
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
@@ -121,6 +126,20 @@ const AddItem = () => {
                   </FormItem>
                 )}
               />
+
+              <FormField
+                control={form.control}
+                name="due_date"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Due date</FormLabel>
+                    <FormControl>
+                      <Input type="date" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
             </div>
 
             <DialogFooter>
@@ -140,4 +159,4 @@ const AddItem = () => {
   )
 }
 
-export default AddItem
+export default AddTask

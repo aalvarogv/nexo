@@ -12,8 +12,8 @@ export const slugify = (text: string) =>
     .replace(/\s+/g, "-")
     .replace(/[^\w-]+/g, "")
 
-export const randomItemTitle = () =>
-  `Item ${Math.random().toString(36).substring(7)}`
+export const randomTaskTitle = () =>
+  `Task ${Math.random().toString(36).substring(7)}`
 
-export const randomItemDescription = () =>
+export const randomTaskDescription = () =>
   `Description ${Math.random().toString(36).substring(7)}`

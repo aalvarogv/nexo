@@ -45,74 +45,6 @@ export type HTTPValidationError = {
 };
 
 /**
- * ItemCreate
- */
-export type ItemCreate = {
-    /**
-     * Title
-     */
-    title: string;
-    /**
-     * Description
-     */
-    description?: string | null;
-};
-
-/**
- * ItemPublic
- */
-export type ItemPublic = {
-    /**
-     * Title
-     */
-    title: string;
-    /**
-     * Description
-     */
-    description?: string | null;
-    /**
-     * Id
-     */
-    id: string;
-    /**
-     * Owner Id
-     */
-    owner_id: string;
-    /**
-     * Created At
-     */
-    created_at?: string | null;
-};
-
-/**
- * ItemUpdate
- */
-export type ItemUpdate = {
-    /**
-     * Title
-     */
-    title?: string | null;
-    /**
-     * Description
-     */
-    description?: string | null;
-};
-
-/**
- * ItemsPublic
- */
-export type ItemsPublic = {
-    /**
-     * Data
-     */
-    data: Array<ItemPublic>;
-    /**
-     * Count
-     */
-    count: number;
-};
-
-/**
  * Message
  */
 export type Message = {
@@ -156,6 +88,98 @@ export type PrivateUserCreate = {
      * Is Verified
      */
     is_verified?: boolean;
+};
+
+/**
+ * TaskCreate
+ */
+export type TaskCreate = {
+    /**
+     * Title
+     */
+    title: string;
+    /**
+     * Description
+     */
+    description?: string | null;
+    /**
+     * Due Date
+     */
+    due_date?: string | null;
+    /**
+     * Is Completed
+     */
+    is_completed?: boolean;
+};
+
+/**
+ * TaskPublic
+ */
+export type TaskPublic = {
+    /**
+     * Title
+     */
+    title: string;
+    /**
+     * Description
+     */
+    description?: string | null;
+    /**
+     * Due Date
+     */
+    due_date?: string | null;
+    /**
+     * Is Completed
+     */
+    is_completed?: boolean;
+    /**
+     * Id
+     */
+    id: string;
+    /**
+     * Owner Id
+     */
+    owner_id: string;
+    /**
+     * Created At
+     */
+    created_at?: string | null;
+};
+
+/**
+ * TaskUpdate
+ */
+export type TaskUpdate = {
+    /**
+     * Title
+     */
+    title?: string | null;
+    /**
+     * Description
+     */
+    description?: string | null;
+    /**
+     * Due Date
+     */
+    due_date?: string | null;
+    /**
+     * Is Completed
+     */
+    is_completed?: boolean | null;
+};
+
+/**
+ * TasksPublic
+ */
+export type TasksPublic = {
+    /**
+     * Data
+     */
+    data: Array<TaskPublic>;
+    /**
+     * Count
+     */
+    count: number;
 };
 
 /**
@@ -340,6 +364,50 @@ export type ValidationError = {
     ctx?: {
         [key: string]: unknown;
     };
+};
+
+/**
+ * WeatherCurrent
+ */
+export type WeatherCurrent = {
+    /**
+     * Temperature C
+     */
+    temperature_c: number;
+    /**
+     * Weather Code
+     */
+    weather_code: number;
+};
+
+/**
+ * WeatherDaily
+ */
+export type WeatherDaily = {
+    /**
+     * Date
+     */
+    date: string;
+    /**
+     * Temperature Min C
+     */
+    temperature_min_c: number;
+    /**
+     * Temperature Max C
+     */
+    temperature_max_c: number;
+    /**
+     * Weather Code
+     */
+    weather_code: number;
+};
+
+/**
+ * WeatherPublic
+ */
+export type WeatherPublic = {
+    current: WeatherCurrent;
+    today: WeatherDaily;
 };
 
 export type loginLoginAccessTokenData = {
@@ -772,7 +840,7 @@ export type utilsHealthCheckResponses = {
 
 export type utilsHealthCheckResponse = utilsHealthCheckResponses[keyof utilsHealthCheckResponses];
 
-export type itemsReadItemsData = {
+export type tasksReadTasksData = {
     body?: never;
     path?: never;
     query?: {
@@ -785,53 +853,53 @@ export type itemsReadItemsData = {
          */
         limit?: number;
     };
-    url: '/api/v1/items/';
+    url: '/api/v1/tasks/';
 };
 
-export type itemsReadItemsErrors = {
+export type tasksReadTasksErrors = {
     /**
      * Validation Error
      */
     422: HTTPValidationError;
 };
 
-export type itemsReadItemsError = itemsReadItemsErrors[keyof itemsReadItemsErrors];
+export type tasksReadTasksError = tasksReadTasksErrors[keyof tasksReadTasksErrors];
 
-export type itemsReadItemsResponses = {
+export type tasksReadTasksResponses = {
     /**
      * Successful Response
      */
-    200: ItemsPublic;
+    200: TasksPublic;
 };
 
-export type itemsReadItemsResponse = itemsReadItemsResponses[keyof itemsReadItemsResponses];
+export type tasksReadTasksResponse = tasksReadTasksResponses[keyof tasksReadTasksResponses];
 
-export type itemsCreateItemData = {
-    body: ItemCreate;
+export type tasksCreateTaskData = {
+    body: TaskCreate;
     path?: never;
     query?: never;
-    url: '/api/v1/items/';
+    url: '/api/v1/tasks/';
 };
 
-export type itemsCreateItemErrors = {
+export type tasksCreateTaskErrors = {
     /**
      * Validation Error
      */
     422: HTTPValidationError;
 };
 
-export type itemsCreateItemError = itemsCreateItemErrors[keyof itemsCreateItemErrors];
+export type tasksCreateTaskError = tasksCreateTaskErrors[keyof tasksCreateTaskErrors];
 
-export type itemsCreateItemResponses = {
+export type tasksCreateTaskResponses = {
     /**
      * Successful Response
      */
-    200: ItemPublic;
+    200: TaskPublic;
 };
 
-export type itemsCreateItemResponse = itemsCreateItemResponses[keyof itemsCreateItemResponses];
+export type tasksCreateTaskResponse = tasksCreateTaskResponses[keyof tasksCreateTaskResponses];
 
-export type itemsDeleteItemData = {
+export type tasksDeleteTaskData = {
     body?: never;
     path: {
         /**
@@ -840,28 +908,28 @@ export type itemsDeleteItemData = {
         id: string;
     };
     query?: never;
-    url: '/api/v1/items/{id}';
+    url: '/api/v1/tasks/{id}';
 };
 
-export type itemsDeleteItemErrors = {
+export type tasksDeleteTaskErrors = {
     /**
      * Validation Error
      */
     422: HTTPValidationError;
 };
 
-export type itemsDeleteItemError = itemsDeleteItemErrors[keyof itemsDeleteItemErrors];
+export type tasksDeleteTaskError = tasksDeleteTaskErrors[keyof tasksDeleteTaskErrors];
 
-export type itemsDeleteItemResponses = {
+export type tasksDeleteTaskResponses = {
     /**
      * Successful Response
      */
     200: Message;
 };
 
-export type itemsDeleteItemResponse = itemsDeleteItemResponses[keyof itemsDeleteItemResponses];
+export type tasksDeleteTaskResponse = tasksDeleteTaskResponses[keyof tasksDeleteTaskResponses];
 
-export type itemsReadItemData = {
+export type tasksReadTaskData = {
     body?: never;
     path: {
         /**
@@ -870,29 +938,29 @@ export type itemsReadItemData = {
         id: string;
     };
     query?: never;
-    url: '/api/v1/items/{id}';
+    url: '/api/v1/tasks/{id}';
 };
 
-export type itemsReadItemErrors = {
+export type tasksReadTaskErrors = {
     /**
      * Validation Error
      */
     422: HTTPValidationError;
 };
 
-export type itemsReadItemError = itemsReadItemErrors[keyof itemsReadItemErrors];
+export type tasksReadTaskError = tasksReadTaskErrors[keyof tasksReadTaskErrors];
 
-export type itemsReadItemResponses = {
+export type tasksReadTaskResponses = {
     /**
      * Successful Response
      */
-    200: ItemPublic;
+    200: TaskPublic;
 };
 
-export type itemsReadItemResponse = itemsReadItemResponses[keyof itemsReadItemResponses];
+export type tasksReadTaskResponse = tasksReadTaskResponses[keyof tasksReadTaskResponses];
 
-export type itemsUpdateItemData = {
-    body: ItemUpdate;
+export type tasksUpdateTaskData = {
+    body: TaskUpdate;
     path: {
         /**
          * Id
@@ -900,26 +968,42 @@ export type itemsUpdateItemData = {
         id: string;
     };
     query?: never;
-    url: '/api/v1/items/{id}';
+    url: '/api/v1/tasks/{id}';
 };
 
-export type itemsUpdateItemErrors = {
+export type tasksUpdateTaskErrors = {
     /**
      * Validation Error
      */
     422: HTTPValidationError;
 };
 
-export type itemsUpdateItemError = itemsUpdateItemErrors[keyof itemsUpdateItemErrors];
+export type tasksUpdateTaskError = tasksUpdateTaskErrors[keyof tasksUpdateTaskErrors];
 
-export type itemsUpdateItemResponses = {
+export type tasksUpdateTaskResponses = {
     /**
      * Successful Response
      */
-    200: ItemPublic;
+    200: TaskPublic;
 };
 
-export type itemsUpdateItemResponse = itemsUpdateItemResponses[keyof itemsUpdateItemResponses];
+export type tasksUpdateTaskResponse = tasksUpdateTaskResponses[keyof tasksUpdateTaskResponses];
+
+export type weatherReadWeatherData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/v1/weather/';
+};
+
+export type weatherReadWeatherResponses = {
+    /**
+     * Successful Response
+     */
+    200: WeatherPublic;
+};
+
+export type weatherReadWeatherResponse = weatherReadWeatherResponses[keyof weatherReadWeatherResponses];
 
 export type privateCreateUserData = {
     body: PrivateUserCreate;

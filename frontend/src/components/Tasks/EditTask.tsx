@@ -5,7 +5,7 @@ import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 
-import { type ItemPublic, ItemsService } from "@/client"
+import { type TaskPublic, TasksService } from "@/client"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -33,16 +33,17 @@ import { handleError } from "@/utils"
 const formSchema = z.object({
   title: z.string().min(1, { message: "Title is required" }),
   description: z.string().optional(),
+  due_date: z.string().optional(),
 })
 
 type FormData = z.infer<typeof formSchema>
 
-interface EditItemProps {
-  item: ItemPublic
+interface EditTaskProps {
+  task: TaskPublic
   onSuccess: () => void
 }
 
-const EditItem = ({ item, onSuccess }: EditItemProps) => {
+const EditTask = ({ task, onSuccess }: EditTaskProps) => {
   const [isOpen, setIsOpen] = useState(false)
   const queryClient = useQueryClient()
   const { showSuccessToast, showErrorToast } = useCustomToast()
@@ -52,22 +53,26 @@ const EditItem = ({ item, onSuccess }: EditItemProps) => {
     mode: "onBlur",
     criteriaMode: "all",
     defaultValues: {
-      title: item.title,
-      description: item.description ?? undefined,
+      title: task.title,
+      description: task.description ?? undefined,
+      due_date: task.due_date ?? undefined,
     },
   })
 
   const mutation = useMutation({
     mutationFn: (data: FormData) =>
-      ItemsService.updateItem({ path: { id: item.id }, body: data }),
+      TasksService.updateTask({
+        path: { id: task.id },
+        body: { ...data, due_date: data.due_date || null },
+      }),
     onSuccess: () => {
-      showSuccessToast("Item updated successfully")
+      showSuccessToast("Task updated successfully")
       setIsOpen(false)
       onSuccess()
     },
     onError: handleError.bind(showErrorToast),
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["items"] })
+      queryClient.invalidateQueries({ queryKey: ["tasks"] })
     },
   })
 
@@ -82,15 +87,15 @@ const EditItem = ({ item, onSuccess }: EditItemProps) => {
         onClick={() => setIsOpen(true)}
       >
         <Pencil />
-        Edit Item
+        Edit Task
       </DropdownMenuItem>
       <DialogContent className="sm:max-w-md">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <DialogHeader>
-              <DialogTitle>Edit Item</DialogTitle>
+              <DialogTitle>Edit Task</DialogTitle>
               <DialogDescription>
-                Update the item details below.
+                Update the task details below.
               </DialogDescription>
             </DialogHeader>
             <div className="grid gap-4 py-4">
@@ -123,6 +128,20 @@ const EditItem = ({ item, onSuccess }: EditItemProps) => {
                   </FormItem>
                 )}
               />
+
+              <FormField
+                control={form.control}
+                name="due_date"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Due date</FormLabel>
+                    <FormControl>
+                      <Input type="date" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
             </div>
 
             <DialogFooter>
@@ -142,4 +161,4 @@ const EditItem = ({ item, onSuccess }: EditItemProps) => {
   )
 }
 
-export default EditItem
+export default EditTask
